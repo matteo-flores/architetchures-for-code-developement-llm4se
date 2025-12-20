@@ -3,6 +3,9 @@ class TestTask3:
 
   def __init__(self, sort_numbers):
     self.fun = sort_numbers
+  
+  def get_benchmark_input(self):
+    return ('six five four three two one zero',)
 
   def execute_tests(self):
     tests_passed = 0

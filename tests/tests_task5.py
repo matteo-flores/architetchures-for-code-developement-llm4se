@@ -4,6 +4,9 @@ class TestTask5:
   def __init__(self, count_common):
     self.fun = count_common
 
+  def get_benchmark_input(self):
+    return (['apple', 'banana', 'orange', 'apple', 'apple', 'banana', 'grapes', 'kiwi', 'pear', 'apple'],)
+
   def execute_tests(self):
     tests_passed = 0
     test_methods = [method for method in dir(self) if method.startswith('test_')]

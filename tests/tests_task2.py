@@ -4,6 +4,9 @@ class TestTask2:
   def __init__(self, parse_nested_parens):
     self.fun = parse_nested_parens
 
+  def get_benchmark_input(self):
+    return ('(()()) ((())) (()(()))',)
+
   def execute_tests(self):
     tests_passed = 0
     test_methods = [method for method in dir(self) if method.startswith('test_')]

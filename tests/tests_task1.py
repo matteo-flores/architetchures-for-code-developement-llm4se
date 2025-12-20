@@ -3,6 +3,9 @@ class TestTask1:
 
   def __init__(self, has_cloese_elements):
     self.fun = has_cloese_elements
+  
+  def get_benchmark_input(self):
+    return ([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.3)
 
   def execute_tests(self):
     tests_passed = 0

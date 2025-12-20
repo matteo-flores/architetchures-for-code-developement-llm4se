@@ -3,6 +3,9 @@ class TestTask4:
 
   def __init__(self, decimal_to_Octal):
     self.fun = decimal_to_Octal
+  
+  def get_benchmark_input(self):
+    return (1000,)
 
   def execute_tests(self):
     tests_passed = 0

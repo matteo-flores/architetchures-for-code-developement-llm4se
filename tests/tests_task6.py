@@ -3,6 +3,9 @@ class TestTask6:
 
   def __init__(self, odd_position):
     self.fun = odd_position
+  
+  def get_benchmark_input(self):
+    return ([2, 1, 4, 3, 6, 7, 8, 9, 10, 11],)
 
   def execute_tests(self):
     tests_passed = 0
