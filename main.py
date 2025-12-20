@@ -37,7 +37,7 @@ def run_pipeline(task_data, planner_client, coder_client, config_name):
   attempts = 0
 
   while attempts < MAX_RETRIES and not is_passing:
-    current_code = coder.code(prompt, plan, feedback)
+    current_code = coder.code(prompt, plan, current_code, feedback)
     
     success, error_msg = tester.test(current_code, unit_tests)
     
