@@ -1,31 +1,48 @@
-
 class TestTask4:
   """Test Suite for MBPP/467 - decimal_to_Octal"""
 
-  def test_basic_cases(self, decimal_to_Octal):
-    assert decimal_to_Octal(10) == 12
-    assert decimal_to_Octal(2) == 2
-    assert decimal_to_Octal(33) == 41
+  def __init__(self, decimal_to_Octal):
+    self.fun = decimal_to_Octal
 
-  def test_zero(self, decimal_to_Octal):
-      assert decimal_to_Octal(0) == 0
+  def execute_tests(self):
+    tests_passed = 0
+    test_methods = [method for method in dir(self) if method.startswith('test_')]
+    total_tests = len(test_methods)
+    
+    for method_name in test_methods:
+      method = getattr(self, method_name)
+      try:
+        method()
+        tests_passed += 1
+      except Exception as e:
+        print(f"[DEBUG]: Task 4 - {method_name} failed.")
+    
+    return tests_passed, total_tests
 
-  def test_large_number(self, decimal_to_Octal):
-      assert decimal_to_Octal(100) == 144
+  def test_01_basic_cases(self):
+    assert self.fun(10) == 12
+    assert self.fun(2) == 2
+    assert self.fun(33) == 41
 
-  def test_power_of_eight(self, decimal_to_Octal):
-    assert decimal_to_Octal(8) == 10
-    assert decimal_to_Octal(64) == 100
+  def test_02_zero(self):
+    assert self.fun(0) == 0
 
-  def test_negative_input(self, decimal_to_Octal):
+  def test_03_large_number(self):
+    assert self.fun(100) == 144
+
+  def test_04_power_of_eight(self):
+    assert self.fun(8) == 10
+    assert self.fun(64) == 100
+
+  def test_05_negative_input(self):
     try:
-      result = decimal_to_Octal(-10)
+      result = self.fun(-10)
       assert result == -12 or isinstance(result, (int, str))
     except (ValueError, Exception):
-      pass
+        pass
 
-  def test_float_input(self, decimal_to_Octal):
+  def test_06_float_input(self):
     try:
-      decimal_to_Octal(10.5)
+      self.fun(10.5)
     except (TypeError, ValueError, Exception):
       pass

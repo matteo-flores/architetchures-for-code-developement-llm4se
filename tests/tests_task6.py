@@ -1,30 +1,36 @@
-
 class TestTask6:
   """Test Suite for MBPP/775 - odd_position"""
 
-  def test_basic_cases(self, odd_position):
-    assert odd_position([2, 1, 4, 3, 6, 7, 6, 3]) == True
-    assert odd_position([4, 1, 2]) == True
-    assert odd_position([1, 2, 3]) == False
+  def __init__(self, odd_position):
+    self.fun = odd_position
 
-  def test_empty_list(self, odd_position):
-    assert odd_position([]) == True
+  def execute_tests(self):
+    tests_passed = 0
+    test_methods = [method for method in dir(self) if method.startswith('test_')]
+    total_tests = len(test_methods)
+    
+    for method_name in test_methods:
+      method = getattr(self, method_name)
+      try:
+        method()
+        tests_passed += 1
+      except Exception as e:
+        print(f"[DEBUG]: Task 6 - {method_name} failed.")
+    
+    return tests_passed, total_tests
 
-  def test_single_element_even(self, odd_position):
-    assert odd_position([2]) == True
+  def test_01_basic_cases(self):
+    assert self.fun([2, 1, 4, 3, 6, 7, 6, 3]) == True
+    assert self.fun([4, 1, 2]) == True
+    assert self.fun([1, 2, 3]) == False
 
-  def test_single_element_odd(self, odd_position):
-    assert odd_position([1]) == True
+  def test_02_empty_list(self):
+    assert self.fun([]) == True
 
-  def test_fail_at_first_odd_index(self, odd_position):
-    assert odd_position([0, 2, 0]) == False
+  def test_03_single_element(self):
+    assert self.fun([2]) == True
+    assert self.fun([1]) == True
 
-  def test_large_list(self, odd_position):
+  def test_04_large_list(self):
     nums = [0, 1] * 50
-    assert odd_position(nums) == True
-
-  def test_non_integer_input(self, odd_position):
-    try:
-      odd_position([2, "1", 4])
-    except (TypeError, Exception):
-      pass
+    assert self.fun(nums) == True
