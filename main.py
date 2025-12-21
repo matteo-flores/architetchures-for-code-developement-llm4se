@@ -46,7 +46,7 @@ LLM_MISTRAL_CLIENT = LLMClient(model_id=MODEL_ID_MISTRAL)   # refiner
 def single_agent_arch(task_data, client):
   return client.ask(task_data['prompt'])
 
-def run_pipeline(task_data, planner_client, coder_client, config_name):
+def run_pipeline(task_data, planner_client, coder_client, tester_client, commenter_client, config_name):
   task_id = task_data['task_id']
   prompt = task_data['prompt']
   unit_tests = task_data['test']
@@ -57,7 +57,7 @@ def run_pipeline(task_data, planner_client, coder_client, config_name):
   plan = planner.plan(prompt)
  
   coder = CoderAgent(llm_client=coder_client)
-  tester = TesterAgent()
+  tester = TesterAgent(llm_client=tester_client)
   
   current_code = ""
   feedback = ""
@@ -77,7 +77,7 @@ def run_pipeline(task_data, planner_client, coder_client, config_name):
       attempts += 1
       print(f"  [Attempt {attempts}] Failed. Retrying with feedback...")
 
-  commenter = CommenterAgent(llm_client=LLM_SMALL_CLIENT)
+  commenter = CommenterAgent(llm_client=commenter_client)
   final_code = commenter.comment(current_code)
   
   return final_code
@@ -245,9 +245,9 @@ def __main__():
 
     result = single_agent_arch(task_data, LLM_LARGE_CLIENT)
     results.append(result)
-    result = run_pipeline(task_data, LLM_MISTRAL_CLIENT, LLM_LARGE_CLIENT, "Architeture 2")
+    result = run_pipeline(task_data, LLM_MISTRAL_CLIENT, LLM_LARGE_CLIENT, LLM_LARGE_CLIENT, LLM_SMALL_CLIENT, "Architeture 2")
     results.append(result)
-    result = run_pipeline(task_data, LLM_LARGE_CLIENT, LLM_SMALL_CLIENT, "Architeture 3")
+    result = run_pipeline(task_data, LLM_LARGE_CLIENT, LLM_SMALL_CLIENT, LLM_LARGE_CLIENT, LLM_SMALL_CLIENT, "Architeture 3")
     results.append(result)
     result = run_pipeline_paper(task_data, LLM_LLAMA, LLM_CLAUDE, LLM_O1, LLM_MISTRAL_CLIENT)
     results.append(result)
