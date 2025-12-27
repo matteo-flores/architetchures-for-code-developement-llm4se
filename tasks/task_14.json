@@ -1,12 +1,7 @@
 {
-  "text": "Write a function to sort a given matrix in ascending order according to the sum of its rows.",
-  "code": "def sort_matrix(M):\n    result = sorted(M, key=sum)\n    return result",
-  "task_id": 12,
-  "test_setup_code": "",
-  "test_list": [
-    "assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]]) == [[1, 1, 1], [1, 2, 3], [2, 4, 5]]",
-    "assert sort_matrix([[1, 2, 3], [-2, 4, -5], [1, -1, 1]]) == [[-2, 4, -5], [1, -1, 1], [1, 2, 3]]",
-    "assert sort_matrix([[5, 8, 9], [6, 4, 3], [2, 1, 4]]) == [[2, 1, 4], [6, 4, 3], [5, 8, 9]]"
-  ],
-  "challenge_test_list": []
+  "task_id": "MBPP/12",
+  "prompt": "from typing import List\n\n\ndef sort_matrix(M: List[List[int]]) -> List[List[int]]:\n    \"\"\" Write a function to sort a given matrix in ascending order according to the sum of its rows. \"\"\"\n",
+  "entry_point": "sort_matrix",
+  "canonical_solution": "    result = sorted(M, key=sum)\n    return result\n",
+  "test": "\n\nMETADATA = {\n    'author': 'mbpp',\n    'dataset': 'mbpp'\n}\n\n\ndef check(candidate):\n    assert candidate([[1, 2, 3], [2, 4, 5], [1, 1, 1]]) == [[1, 1, 1], [1, 2, 3], [2, 4, 5]]\n    assert candidate([[1, 2, 3], [-2, 4, -5], [1, -1, 1]]) == [[-2, 4, -5], [1, -1, 1], [1, 2, 3]]\n    assert candidate([[5, 8, 9], [6, 4, 3], [2, 1, 4]]) == [[2, 1, 4], [6, 4, 3], [5, 8, 9]]\n\n"
 }
