@@ -21,8 +21,20 @@ from agents.reviewer import ReviewerAgent
 from radon.metrics import mi_visit
 from radon.metrics import ComplexityVisitor
 import time
+from dotenv import load_dotenv
+from huggingface_hub import login
 
-TASK_NUMBER = 10
+# load variables from the .env file
+load_dotenv()
+
+token = os.getenv("HF_TOKEN")
+
+if token:
+  login(token=token)
+else:
+  print("Error: token not found in .env file")
+
+TASK_NUMBER = 20
 MAX_RETRIES = 10
 
 MODEL_ID_LARGE = "meta-llama/Llama-2-7b-hf" # big LLM
@@ -45,7 +57,7 @@ LLM_O1 = LLMClient(model_id=MODEL_ID_O1)                    # reviewer
 LLM_MISTRAL_CLIENT = LLMClient(model_id=MODEL_ID_MISTRAL)   # refiner
 
 def single_agent_arch(task_data, client):
-  return client.ask(task_data['prompt'])
+  return client.generate_response(task_data['prompt'])[0]
 
 def run_pipeline(task_data, planner_client, coder_client, tester_client, commenter_client, config_name):
   task_id = task_data['task_id']
@@ -69,7 +81,7 @@ def run_pipeline(task_data, planner_client, coder_client, tester_client, comment
 
   while attempts < MAX_RETRIES and not is_passing:
     current_code = coder.code(prompt, plan, current_code, feedback)
-    
+    print(f"  Code generated, passing it to the tester...")
     success, error_msg = tester.test(current_code, tests)
     
     if success:
@@ -229,7 +241,7 @@ def get_cyclomatic_complexity(code):
     print(f"[DEBUG]: Error calculating CC: {e}")
     return 1
 
-def __main__():
+def main():
 
   print("Architetures:")
   print("1.\tSingle agent")
@@ -238,16 +250,17 @@ def __main__():
   print("4.\tPlanner -> Coder -> Reviwer -> Refiner")
 
   for i in range(TASK_NUMBER):
-    task_file = f"tasks/task{i+1}.json"
+    task_file = f"tasks/task_{i+1:02}.json"
     if not os.path.exists(task_file): continue
 
     with open(task_file, 'r') as f:
       task_data = json.load(f)
     
+    print(f"Task {i+1}")
     results = list()
 
-    result = single_agent_arch(task_data, LLM_LARGE_CLIENT)
-    results.append(result)
+    #result = single_agent_arch(task_data, LLM_LARGE_CLIENT)
+    #results.append(result)
     result = run_pipeline(task_data, LLM_MISTRAL_CLIENT, LLM_LARGE_CLIENT, LLM_LARGE_CLIENT, LLM_SMALL_CLIENT, "Architeture 2")
     results.append(result)
     result = run_pipeline(task_data, LLM_LARGE_CLIENT, LLM_SMALL_CLIENT, LLM_LARGE_CLIENT, LLM_SMALL_CLIENT, "Architeture 3")
@@ -267,3 +280,6 @@ def __main__():
         f_out.write(best_code)
     else:
       print("No architecture has generated a working code.")
+
+if __name__ == '__main__':
+  main()

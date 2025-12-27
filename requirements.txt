@@ -1,0 +1,20 @@
+# Gestione Ambiente e API
+python-dotenv
+huggingface_hub
+
+# LLM Clients e Framework (a seconda della tua implementazione di LLMClient)
+# Se usi librerie standard per OpenAI o Anthropic:
+openai
+anthropic
+# Se usi Transformers localmente:
+transformers
+torch
+accelerate
+bitsandbytes
+
+# Metriche di qualità del codice e Analisi Statica
+radon
+
+# Utility
+requests
+tqdm
