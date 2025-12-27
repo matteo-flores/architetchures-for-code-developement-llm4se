@@ -1,8 +1,7 @@
 {
-  "text": "Write a python function to convert decimal number to octal number.",
-  "code": "def decimal_to_Octal(deciNum):\r\n    octalNum = 0\r\n    countval = 1;\r\n    dNo = deciNum;\r\n    while (deciNum!= 0):\r\n        remainder= deciNum % 8;\r\n        octalNum+= remainder*countval;\r\n        countval= countval*10;\r\n        deciNum //= 8; \r\n    return (octalNum)",
-  "task_id": 467,
-  "test_setup_code": "",
-  "test_list": ["assert decimal_to_Octal(10) == 12", "assert decimal_to_Octal(2) == 2", "assert decimal_to_Octal(33) == 41"],
-  "challenge_test_list": []
+  "task_id": "MBPP/467",
+  "prompt": "def decimal_to_Octal(deciNum: int) -> int:\n    \"\"\" Convert a decimal number to its octal representation.\n\n    >>> decimal_to_Octal(10)\n    12\n    >>> decimal_to_Octal(2)\n    2\n    >>> decimal_to_Octal(33)\n    41\n    \"\"\"\n",
+  "entry_point": "decimal_to_Octal",
+  "canonical_solution": "    octalNum = 0\n    countval = 1\n    while deciNum != 0:\n        remainder = deciNum % 8\n        octalNum += remainder * countval\n        countval *= 10\n        deciNum //= 8\n    return octalNum\n",
+  "test": "\n\nMETADATA = {\n    'author': 'mbpp',\n    'dataset': 'mbpp'\n}\n\n\ndef check(candidate):\n    assert candidate(10) == 12\n    assert candidate(2) == 2\n    assert candidate(33) == 41\n\n"
 }
