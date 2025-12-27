@@ -1,7 +1,7 @@
 {
-  "text": "Write a python function to check whether every odd index contains odd numbers of a given list.",
-  "code": "def odd_position(nums):\r\n\treturn all(nums[i]%2==i%2 for i in range(len(nums)))",
-  "task_id": 775, "test_setup_code": "",
-  "test_list": ["assert odd_position([2,1,4,3,6,7,6,3]) == True", "assert odd_position([4,1,2]) == True", "assert odd_position([1,2,3]) == False"],
-  "challenge_test_list": []
+  "task_id": "MBPP/775",
+  "prompt": "from typing import List\n\n\ndef odd_position(nums: List[int]) -> bool:\n    \"\"\" Write a python function to check whether every odd index contains odd numbers of a given list. \"\"\"\n",
+  "entry_point": "odd_position",
+  "canonical_solution": "    return all(nums[i] % 2 == i % 2 for i in range(len(nums)))\n",
+  "test": "\n\nMETADATA = {\n    'author': 'mbpp',\n    'dataset': 'mbpp'\n}\n\n\ndef check(candidate):\n    assert candidate([2,1,4,3,6,7,6,3]) == True\n    assert candidate([4,1,2]) == True\n    assert candidate([1,2,3]) == False\n\n"
 }
