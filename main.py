@@ -91,7 +91,7 @@ def run_pipeline(task_data, planner_client, coder_client, tester_client, comment
 
   while attempts < MAX_RETRIES and not is_passing:
     current_code = coder.code(prompt, plan, current_code, feedback)
-    print(f"  Code generated, passing it to the tester...")
+    print(f"  Code generated: {current_code}")
     success, error_msg = tester.test(current_code, tests)
     
     if success:
@@ -100,7 +100,7 @@ def run_pipeline(task_data, planner_client, coder_client, tester_client, comment
     else:
       feedback = f"The code failed tests. Error: {error_msg}"
       attempts += 1
-      print(f"  [Attempt {attempts}] Failed. Retrying with feedback...")
+      print(f"  [Attempt {attempts}] Failed. Retrying with feedback. Error message: {error_msg}")
 
   commenter = CommenterAgent(llm_client=commenter_client)
   final_code = commenter.comment(current_code)
