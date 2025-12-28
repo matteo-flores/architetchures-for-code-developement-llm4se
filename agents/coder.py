@@ -97,34 +97,34 @@ class CoderAgent:
 
 
   def _extract_clean_code(self, response: str) -> str:
-    python_block = re.search(
-        r"```python\s*(.*?)```",
-        response,
-        re.DOTALL | re.IGNORECASE
-    )
-    if python_block:
-        return python_block.group(1).strip()
-    generic_block = re.search(
-        r"```\s*(.*?)```",
-        response,
-        re.DOTALL
-    )
-    if generic_block:
-        return generic_block.group(1).strip()
-    # robust fallback: extract only first function
-    lines = response.splitlines()
+    import re
+
+    # cerca la prima funzione: def <name>(...)
+    func_match = re.search(r"(^|\n)(\s*)def\s+\w+\s*\(.*?\)\s*:", response)
+    if not func_match:
+        # fallback: ritorna tutto se non trova def
+        return response.strip()
+    
+    # estrai tutte le linee a partire dalla def trovata
+    start_idx = func_match.start()
+    lines = response[start_idx:].splitlines()
     code_lines = []
-    in_function = False
+    indent_level = None
+
     for line in lines:
-        if line.startswith("def "):
-            in_function = True
+        if not code_lines:
             code_lines.append(line)
-        elif in_function:
-            if line.startswith(" ") or line.startswith("\t") or line.strip() == "":
+            # calcola il livello di indent della funzione
+            indent_match = re.match(r"(\s*)def\s", line)
+            indent_level = len(indent_match.group(1)) if indent_match else 0
+        else:
+            # accetta linee vuote o linee indentate almeno quanto la funzione
+            stripped = line.lstrip()
+            curr_indent = len(line) - len(stripped)
+            if line.strip() == "" or curr_indent > indent_level:
                 code_lines.append(line)
             else:
                 break
-    if code_lines:
-        return "\n".join(code_lines).strip()
-    raise ValueError("No Python code found in LLM response")
+
+    return "\n".join(code_lines).rstrip()
 
