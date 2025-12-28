@@ -96,35 +96,37 @@ class CoderAgent:
       """
 
 
-  def _extract_clean_code(self, response: str) -> str:
-    import re
+def _extract_clean_code(self, response: str) -> str:
 
-    # cerca la prima funzione: def <name>(...)
-    func_match = re.search(r"(^|\n)(\s*)def\s+\w+\s*\(.*?\)\s*:", response)
-    if not func_match:
-        # fallback: ritorna tutto se non trova def
-        return response.strip()
-    
-    # estrai tutte le linee a partire dalla def trovata
-    start_idx = func_match.start()
-    lines = response[start_idx:].splitlines()
-    code_lines = []
-    indent_level = None
+    # Rimuove eventuali docstring triple quote all'inizio
+    response = re.sub(r'^["\']{3}[\s\S]*?["\']{3}', '', response, count=1).strip()
 
+    # Cerca blocchi ```python``` o ``` generici
+    python_block = re.search(r"```python\s*(.*?)```", response, re.DOTALL | re.IGNORECASE)
+    if python_block:
+        response = python_block.group(1)
+    else:
+        generic_block = re.search(r"```\s*(.*?)```", response, re.DOTALL)
+        if generic_block:
+            response = generic_block.group(1)
+
+    # Rimuove leading space comune (LLM indent)
+    lines = response.splitlines()
+    min_indent = None
     for line in lines:
-        if not code_lines:
-            code_lines.append(line)
-            # calcola il livello di indent della funzione
-            indent_match = re.match(r"(\s*)def\s", line)
-            indent_level = len(indent_match.group(1)) if indent_match else 0
-        else:
-            # accetta linee vuote o linee indentate almeno quanto la funzione
-            stripped = line.lstrip()
-            curr_indent = len(line) - len(stripped)
-            if line.strip() == "" or curr_indent > indent_level:
-                code_lines.append(line)
-            else:
-                break
+        stripped = line.lstrip()
+        if stripped:
+            indent = len(line) - len(stripped)
+            if min_indent is None or indent < min_indent:
+                min_indent = indent
+    if min_indent is None:
+        min_indent = 0
+    lines = [line[min_indent:] for line in lines]
 
-    return "\n".join(code_lines).rstrip()
+    # Prendi solo le righe che contengono codice (ignora linee vuote all’inizio)
+    while lines and not lines[0].strip().startswith("def "):
+        lines.pop(0)
+
+    return "\n".join(lines).rstrip()
+
 
