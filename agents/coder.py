@@ -26,6 +26,15 @@ class CoderAgent:
         )
     
     response = self.llm.generate_response(full_prompt)
+    
+    if isinstance(response, tuple):
+        response = response[0]
+
+            # DEBUG TEMPORANEO
+    print("\n===== RAW LLM OUTPUT =====\n")
+    print(response)
+    print("\n==========================\n")
+
     return self._extract_clean_code(response)
 
   def _extract_signature_from_plan(self, plan: str) -> str:
