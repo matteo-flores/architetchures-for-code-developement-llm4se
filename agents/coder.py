@@ -96,7 +96,7 @@ class CoderAgent:
       """
 
 
-def _extract_clean_code(self, response: str) -> str:
+  def _extract_clean_code(self, response: str) -> str:
 
     # Rimuove eventuali docstring triple quote all'inizio
     response = re.sub(r'^["\']{3}[\s\S]*?["\']{3}', '', response, count=1).strip()
