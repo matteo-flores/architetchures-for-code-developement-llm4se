@@ -107,7 +107,7 @@ def run_pipeline(task_data, planner_client, coder_client, tester_client, comment
   
   return final_code
 
-def run_pipeline_paper(task_data, planner_client, coder_client, reviewer_client, refiner_client):
+def run_pipeline_paper(task_data, planner_client, coder_client, tester_client, reviewer_client, refiner_client):
   task_id = task_data['task_id']
   prompt = task_data['prompt']
   unit_tests = task_data['test']
@@ -118,14 +118,19 @@ def run_pipeline_paper(task_data, planner_client, coder_client, reviewer_client,
   plan = planner.plan(prompt)
   
   coder = CoderAgent(llm_client=coder_client)
+
+  tester = TesterAgent(llm_client = tester_client)
+  tests = tester.generate_tests(prompt, unit_tests)
+
   reviewer = ReviewerAgent(llm_client=reviewer_client)
   refiner = RefinerAgent(llm_client=refiner_client)
-  tester = TesterAgent()
+
   
   current_code = ""
   feedback = ""
   is_passing = False
   attempts = 0
+
 
   while attempts < MAX_RETRIES and not is_passing:
     if attempts == 0:
@@ -135,7 +140,7 @@ def run_pipeline_paper(task_data, planner_client, coder_client, reviewer_client,
     
     review_feedback = reviewer.review(current_code, prompt)
     
-    success, error_msg = tester.test(current_code, unit_tests)
+    success, error_msg = tester.test(current_code, tests)
     
     if success and "APPROVED" in review_feedback.upper():
       is_passing = True
@@ -275,7 +280,7 @@ def main():
     results.append(result)
     result = run_pipeline(task_data, LLM_LARGE_CLIENT, LLM_SMALL_CLIENT, LLM_LARGE_CLIENT, LLM_SMALL_CLIENT, "Architeture 3")
     results.append(result)
-    result = run_pipeline_paper(task_data, LLM_LLAMA, LLM_CLAUDE, LLM_O1, LLM_MISTRAL_CLIENT)
+    result = run_pipeline_paper(task_data, LLM_LLAMA, LLM_CLAUDE, LLM_LARGE_CLIENT, LLM_O1, LLM_MISTRAL_CLIENT)
     results.append(result)
 
     # evaluation
