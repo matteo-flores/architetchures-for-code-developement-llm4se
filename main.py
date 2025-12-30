@@ -51,11 +51,13 @@ MODEL_ID_LARGE = "meta-llama/Llama-2-7b-hf" # big LLM
 #MODEL_ID_SMALL = "gpt2"                      # small LLM
 MODEL_ID_SMALL = "Qwen/Qwen2.5-Coder-1.5B-Instruct" #small LLM
 MODEL_ID_MISTRAL = "mistralai/Mistral-7B-Instruct-v0.3" # planner LLM
+MODEL_ID_DISTILL_LLAMA = "deepseek-ai/DeepSeek-R1-Distill-Llama-8B" # planner LLM
 MODEL_ID_QWEN = "Qwen/Qwen2.5-Coder-7B-Instruct"
 
 LLM_LARGE_CLIENT = LLMClient(model_id=MODEL_ID_LARGE)
 LLM_SMALL_CLIENT = LLMClient(model_id=MODEL_ID_SMALL)
 LLM_MISTRAL_CLIENT = LLMClient(model_id=MODEL_ID_MISTRAL)
+LLM_DISTILL_LLAMA_CLIENT = LLMClient(model_id=MODEL_ID_LLAMA)
 LLM_QWEN = LLMClient(model_id=MODEL_ID_QWEN)
 
 # from the paper
@@ -284,7 +286,7 @@ def main():
     #results.append(result)
     result = run_pipeline(task_data, LLM_MISTRAL_CLIENT, LLM_QWEN, LLM_QWEN, LLM_SMALL_CLIENT, "Architeture 2")
     results.append(result)
-    result = run_pipeline(task_data, LLM_MISTRAL_CLIENT, LLM_QWEN, LLM_QWEN, LLM_SMALL_CLIENT, "Architeture 3")
+    result = run_pipeline(task_data, LLM_DISTILL_LLAMA_CLIENT, LLM_QWEN, LLM_QWEN, LLM_SMALL_CLIENT, "Architeture 3")
     results.append(result)
     #result = run_pipeline_paper(task_data, LLM_LLAMA, LLM_CLAUDE, LLM_QWEN, LLM_O1, LLM_MISTRAL_CLIENT)
     #results.append(result)
