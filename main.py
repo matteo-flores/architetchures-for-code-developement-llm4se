@@ -48,7 +48,8 @@ TASK_NUMBER = 20
 MAX_RETRIES = 10
 
 MODEL_ID_LARGE = "meta-llama/Llama-2-7b-hf" # big LLM
-MODEL_ID_SMALL = "gpt2"                      # small LLM
+#MODEL_ID_SMALL = "gpt2"                      # small LLM
+MODEL_ID_SMALL = "Qwen/Qwen2.5-Coder-1.5B-Instruct" #small LLM
 MODEL_ID_MISTRAL = "mistralai/Mistral-7B-Instruct-v0.3" # planner LLM
 MODEL_ID_QWEN = "Qwen/Qwen2.5-Coder-7B-Instruct"
 
@@ -75,6 +76,7 @@ def run_pipeline(task_data, planner_client, coder_client, tester_client, comment
   task_id = task_data['task_id']
   prompt = task_data['prompt']
   unit_tests = task_data['test']
+  entry_point = task_data['entry_point']
   
   print(f"--- Running {config_name} on {task_id} ---")
 
@@ -84,8 +86,8 @@ def run_pipeline(task_data, planner_client, coder_client, tester_client, comment
   coder = CoderAgent(llm_client=coder_client)
 
   tester = TesterAgent(llm_client=tester_client)
-  tests  = tester.generate_tests(prompt, unit_tests)
-  
+  tests = tester.generate_tests(prompt, unit_tests, entry_point)
+
   current_code = ""
   feedback = ""
   is_passing = False
@@ -284,8 +286,8 @@ def main():
     results.append(result)
     result = run_pipeline(task_data, LLM_MISTRAL_CLIENT, LLM_QWEN, LLM_QWEN, LLM_SMALL_CLIENT, "Architeture 3")
     results.append(result)
-    result = run_pipeline_paper(task_data, LLM_LLAMA, LLM_CLAUDE, LLM_QWEN, LLM_O1, LLM_MISTRAL_CLIENT)
-    results.append(result)
+    #result = run_pipeline_paper(task_data, LLM_LLAMA, LLM_CLAUDE, LLM_QWEN, LLM_O1, LLM_MISTRAL_CLIENT)
+    #results.append(result)
 
     # evaluation
     best_code, best_arch = choose_code(results, task_data['entry_point'], i+1)
