@@ -35,6 +35,12 @@ class TesterAgent:
             
             ### GOAL
             Verify if the provided PYTHON CODE correctly solves the TASK and satisfies the REQUIRED BEHAVIOR.
+
+            ### FORMAT VERIFICATION
+            Strictly check that the provided output contains **ONLY valid Python code**.
+            1. Fail if the code is wrapped in markdown blocks (e.g., ```python ... ```).
+            2. Fail if there is any conversational text, explanations, or introductory phrases.
+            3. The content must be directly executable as a .py file without modification.
             
             ### TASK CONTEXT
             {context}

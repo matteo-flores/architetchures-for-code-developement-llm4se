@@ -142,6 +142,7 @@ def run_pipeline(task_data, planner_client, coder_client, tester_client, comment
     current_code = coder.code(prompt, plan, current_code, feedback)
     print(f"  Code generated: {current_code}")
     success, error_msg = tester.perform_static_review(current_code, tests)
+    print(f"  Review (passed: {success}): {error_msg}")
     
     if success:
       is_passing = True
@@ -185,7 +186,7 @@ def choose_code(codes, fun_name, task_number):
   }
 
   print(f"Task {task_number}")
-  for (index, code) in enumerate(codes):
+  for architecture, code in codes.items():
     namespace = {}
     try:
       exec(code, namespace)
@@ -195,7 +196,7 @@ def choose_code(codes, fun_name, task_number):
       if generated_function:
         tester = testers[task_number](generated_function)
         passed, total = tester.execute_tests()
-        print(f"\tTests for pipeline {index+1}\tpassed: {passed}, total: {total}")
+        print(f"\tTests for pipeline {architecture}\tpassed: {passed}, total: {total}")
 
         if passed == total:
           # going on with metrics
@@ -219,15 +220,15 @@ def choose_code(codes, fun_name, task_number):
           print(f"\nTotal score: {score}")
 
           # Save metrics to file
-          save_metrics(task_number, index+1, MI, CC, execution_time, score)
+          save_metrics(task_number, architecture, MI, CC, execution_time, score)
 
           if best_code is None or score > best_score:
             best_code = code
             best_score = score
-            best_arch = index+1
+            best_arch = architecture
         
         else:
-          save_metrics(task_number, index+1, -1, -1, -1, -1) # not passed
+          save_metrics(task_number, architecture, -1, -1, -1, -1) # not passed
 
       else:
         print(f"\t[ERROR] Unable to retreive the generated function.")
@@ -291,7 +292,6 @@ def main():
   print("3.\tPlanner (Mistral7b) -> Coder (MIstral7B) -> Tester -> Commenter")
   print("4.\tPlanner (DeepSeek) -> Coder (Qwen7B) -> Tester -> Commenter")
   print("5.\tPlanner (DeepSeek) -> Coder (Mistral7B) -> Tester -> Commenter")
-  print("6.\tPlanner -> Coder -> Reviwer -> Refiner")
 
   for i in range(TASK_NUMBER):
     task_file = f"tasks/task_{i+1:02}.json"
@@ -301,19 +301,20 @@ def main():
       task_data = json.load(f)
     
     print(f"Task {i+1}")
-    results = list()
+    results = {}
 
     # (pre) cleaning
     clear_hf_cache()
 
-    result = single_agent_arch(task_data, LLM_QWEN_SA)
-    results.append(result)
-    result = run_pipeline(task_data, LLM_MISTRAL_CLIENT, LLM_QWEN, LLM_QWEN, LLM_SMALL_CLIENT, "Architeture 2")
-    results.append(result)
-    result = run_pipeline(task_data, LLM_DISTILL_LLAMA_CLIENT, LLM_QWEN, LLM_QWEN, LLM_SMALL_CLIENT, "Architeture 3")
-    results.append(result)
-    result = run_pipeline(task_data, LLM_DISTILL_LLAMA_CLIENT, LLM_MISTRAL_CLIENT, LLM_MISTRAL_CLIENT, LLM_SMALL_CLIENT, "Architeture 5")
-    results.append(result)
+    results["1"] = single_agent_arch(task_data, LLM_QWEN_SA)
+
+    # cleaning
+    clear_hf_cache()
+
+    results["2"] = run_pipeline(task_data, LLM_MISTRAL_CLIENT, LLM_QWEN, LLM_MISTRAL_CLIENT, LLM_SMALL_CLIENT, "Architeture 2")
+    results["3"] = run_pipeline(task_data, LLM_MISTRAL_CLIENT, LLM_MISTRAL_CLIENT, LLM_MISTRAL_CLIENT, LLM_SMALL_CLIENT, "Architeture 3")
+    results["4"] = run_pipeline(task_data, LLM_DISTILL_LLAMA_CLIENT, LLM_QWEN, LLM_MISTRAL_CLIENT, LLM_SMALL_CLIENT, "Architeture 4")
+    results["5"] = run_pipeline(task_data, LLM_DISTILL_LLAMA_CLIENT, LLM_MISTRAL_CLIENT, LLM_MISTRAL_CLIENT, LLM_SMALL_CLIENT, "Architeture 5")
 
     # evaluation
     best_code, best_arch = choose_code(results, task_data['entry_point'], i+1)
