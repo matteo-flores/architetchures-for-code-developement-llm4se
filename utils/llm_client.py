@@ -29,7 +29,7 @@ class LLMClient:
     )
     self.model.eval() # inference
 
-  def generate_response(self, prompt: str, max_new_tokens: int = 200, temperature: float = 0.7, deterministic: bool = False, **kwargs) -> tuple[str, int, int]:
+  def generate_response(self, prompt: str, max_new_tokens: int = 500, temperature: float = 0.7, deterministic: bool = False, **kwargs) -> tuple[str, int, int]:
     """
     sends a prompt to the model, return the response and the tokens used/returned
 
