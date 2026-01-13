@@ -19,14 +19,20 @@ class CoderAgent:
             feedback=feedback,
             signature=signature
         )
+        temp = 0.4
     else:
         full_prompt = self._generate_prompt_template(
             prompt=prompt,
             plan=plan,
             signature=signature
         )
+        temp = 0.2
     
-    response = self.llm.generate_response(full_prompt)
+    response = self.llm.generate_response(
+       full_prompt,
+       temperature=temp,
+        max_new_tokens=1024
+    )
     
     if isinstance(response, tuple):
         response = response[0]

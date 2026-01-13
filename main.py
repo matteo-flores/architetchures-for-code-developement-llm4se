@@ -99,7 +99,7 @@ def single_agent_arch(task_data, client):
   ### Implementation:"""
   
   try:
-    response = client.generate_response(prompt)[0]
+    response = client.generate_response(prompt, max_new_tokens=1024, temperature=0.3)[0]
     code_match = re.search(r"```python\s*(.*?)```", response, re.DOTALL | re.IGNORECASE)
     if code_match:
       extracted_code = code_match.group(1).strip()
