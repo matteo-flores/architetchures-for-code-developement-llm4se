@@ -127,15 +127,56 @@ def save_intermediate_code(task_number, arch_number, code):
       print(f"[FILE] Saved architecture code to: {filepath}")
   except Exception as e:
       print(f"[FILE] Error saving file {filepath}: {e}")
-'''
-def measure_execution_time(func, *args, iterations=100):
+
+import ast # Aggiungi questo import in cima al file
+
+def load_stress_input(task_number):
+  """
+  Reads input/task_XX.txt.
+  Tries to parse as python object, otherwise returns a string
+  """
+  input_path = f"input/task_{task_number:02}.txt"
+  
+  if not os.path.exists(input_path):
+    print(f"  [WARN] Input file {input_path} not found. Using default input.")
+    return None
+
+  try:
+    with open(input_path, "r") as f:
+      content = f.read().strip()
+    
+    # is it a python structure?
+    try:
+      return ast.literal_eval(content)
+    except:
+      # raw string
+      return content
+  except Exception as e:
+    print(f"  [ERROR] Reading input file: {e}")
+    return None
+
+def measure_execution_time(func, input_data):
+  """
+  executes the funcion using the input stress
+  """
+  if input_data is None:
+    return 0.001 # default
+      
   start_time = time.perf_counter()
   try:
-      for _ in range(iterations): func(*args)
-  except: pass
+    # if it's a tuple => unpacking
+    if isinstance(input_data, tuple):
+      func(*input_data)
+    else:
+      func(input_data)
+  except Exception as e:
+    print(f"  [PERF ERROR] Execution failed on stress input: {e}")
+    return 10.0 # high penalty
+      
   end_time = time.perf_counter()
-  return (end_time - start_time) / iterations
-'''
+  return end_time - start_time
+
+
 def calculate_maintainability(code):
   try: return mi_visit(code, multi=True)
   except: return 0.0
@@ -183,13 +224,12 @@ def evaluate_and_log(code, arch_name, task_data, i):
     
     mi_norm = min(max(mi, 0), 100) / 100
     cc_norm = 1.0 if cc <= 1 else 1.0 / cc
-    #exec_time = measure_execution_time(LLM_CLIENT.execute_code, code, entry_point, task_data['test'], iterations=10)
-    #exec_time_default = 0.001
-    #time_norm = 0.00001 / max(exec_time_default, 0.00001)
-    #score = (time_norm * 0.5) + (mi_norm * 0.3) + (cc_norm * 0.2)
-    score = (mi_norm * 0.5) + (cc_norm * 0.5)
-    #save_metrics_to_csv(i+1, arch_name, mi, cc, exec_time, score)
-    save_metrics_to_csv(i+1, arch_name, mi, cc, 0, score)
+    input = load_stress_input(i+1)
+    exec_time = measure_execution_time(LLM_CLIENT.execute_code, input)
+    exec_time_default = 0.001
+    time_norm = 0.00001 / max(exec_time_default, 0.00001)
+    score = (time_norm * 0.4) + (mi_norm * 0.3) + (cc_norm * 0.3)
+    save_metrics_to_csv(i+1, arch_name, mi, cc, exec_time, score)
     return score
 
 
@@ -198,7 +238,7 @@ def main():
   print("1. Single Agent")
   print("2. Multi Agent")
 
-  for i in range(1,2):
+  for i in range(TASK_NUMBER):
     task_file = f"tasks/task_{i+1:02}.json"
     if not os.path.exists(task_file): continue
 
