@@ -188,18 +188,18 @@ def clean_code_for_metrics(code):
 
   # removing docstrings
   for node in ast.walk(parsed):
-      if not isinstance(node, (ast.FunctionDef, ast.ClassDef, ast.AsyncFunctionDef, ast.Module)):
-        continue
-      
-      if not node.body:
-        continue
-          
-      if isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, (ast.Constant, ast.Str)):
-          val = node.body[0].value
-          if isinstance(val, ast.Constant) and isinstance(val.value, str):
-              node.body.pop(0) 
-          elif hasattr(val, 's'): 
-              node.body.pop(0)
+    if not isinstance(node, (ast.FunctionDef, ast.ClassDef, ast.AsyncFunctionDef, ast.Module)):
+      continue
+    
+    if not node.body:
+      continue
+        
+    if isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, (ast.Constant, ast.Str)):
+      val = node.body[0].value
+      if isinstance(val, ast.Constant) and isinstance(val.value, str):
+        node.body.pop(0) 
+      elif hasattr(val, 's'): 
+        node.body.pop(0)
 
   # removing comments
   try:
