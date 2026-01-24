@@ -3,6 +3,5 @@
   "prompt": "from typing import Tuple\n\n\ndef longest_common_subsequence(a: str, b: str) -> int:\n    \"\"\"\n    Given two strings a and b, compute the length of their Longest Common Subsequence (LCS).\n    The subsequence does not need to be contiguous.\n    \"\"\"\n    pass\n",
   "entry_point": "longest_common_subsequence",
   "canonical_solution": "",
-  "test": ""
+  "test": "\n\nMETADATA = {\n    'author': 'LLM project authors',\n    'dataset': 'classic_algos'\n}\n\ndef check(candidate):\n    # CASE 1: Empty strings\n    assert candidate(\"\", \"\") == 0\n    assert candidate(\"abc\", \"\") == 0\n    assert candidate(\"\", \"abc\") == 0\n\n    # CASE 2: Identical strings\n    assert candidate(\"abc\", \"abc\") == 3\n\n    # CASE 3: No common characters\n    assert candidate(\"abc\", \"xyz\") == 0\n\n    # CASE 4: Standard LCS (Non-contiguous)\n    # 'ace' is the LCS of 'abcde' and 'ace'\n    assert candidate(\"abcde\", \"ace\") == 3\n    \n    # CASE 5: Classic Algorithm Example\n    # LCS is 'GTAB' (length 4)\n    assert candidate(\"AGGTAB\", \"GXTXAYB\") == 4\n\n    # CASE 6: Order matters\n    # 'ab' and 'ba' share 'a' and 'b', but LCS is 1 (either 'a' or 'b'), not 2.\n    assert candidate(\"ab\", \"ba\") == 1\n    \n    # CASE 7: Complex mixed\n    # LCS is 'adh' (length 3)\n    assert candidate(\"abcdefgh\", \"aXdYhZ\") == 3\n"
 }
-
