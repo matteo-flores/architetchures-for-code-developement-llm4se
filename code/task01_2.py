@@ -2,31 +2,28 @@ from typing import List
 
 
 def has_close_elements(numbers: List[float], threshold: float) -> bool:
-    """Checks if any two elements in a list of numbers are "close" based on a given threshold.
-
-    This function iterates through all unique pairs of numbers in the input list
-    and determines if the absolute difference between any pair is less than the
-    specified threshold.
+    """Check if in a given list of numbers, any two numbers are closer to each other than
+    a given threshold.
 
     Args:
-        numbers (List[float]): A list of floating-point numbers to check.
-        threshold (float): The maximum absolute difference allowed for two numbers
-                           to be considered "close". Must be a non-negative value.
+        numbers: A list of floating-point numbers.
+        threshold: The maximum allowed difference between two numbers to be considered "close".
 
     Returns:
-        bool: True if at least one pair of numbers has an absolute difference
-              less than the threshold, False otherwise.
+        True if any two numbers in the list are closer than the threshold, False otherwise.
+
+    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)
+    False
+    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)
+    True
     """
-    # Iterate through all possible unique pairs of numbers in the list.
-    # The outer loop picks the first element of the pair.
-    for i in range(len(numbers) - 1):
-        # The inner loop picks the second element, ensuring it's different from
-        # and comes after the first element to avoid duplicate pairs and self-comparison.
-        for j in range(i + 1, len(numbers)):
-            # Calculate the absolute difference between the two current numbers.
-            # If the difference is less than the threshold, it means they are "close".
+    n = len(numbers)
+    # Iterate through all possible pairs of numbers in the list.
+    for i in range(n):
+        for j in range(i + 1, n):
+            # Calculate the absolute difference between the current pair of numbers.
+            # If the difference is less than the threshold, it means they are close.
             if abs(numbers[i] - numbers[j]) < threshold:
-                # If a close pair is found, immediately return True as the condition is met.
-                return True
-    # If the loops complete without finding any close elements, return False.
+                return True  # Found a pair of close elements, return True immediately.
+    # If no close elements were found after checking all pairs, return False.
     return False

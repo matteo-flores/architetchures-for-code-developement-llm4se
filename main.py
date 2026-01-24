@@ -172,7 +172,7 @@ def measure_execution_time(func, input_data):
       func(input_data)
   except Exception as e:
     print(f"  [PERF ERROR] Execution failed on stress input: {e}")
-    return 10.0 # high penalty
+    return 1_000_000.0 # high penalty
       
   end_time = time.perf_counter()
   return end_time - start_time

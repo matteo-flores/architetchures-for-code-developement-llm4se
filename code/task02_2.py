@@ -1,6 +1,5 @@
 from typing import List
 
-
 def parse_nested_parens(paren_string: str) -> List[int]:
     """Parses a string of space-separated parenthesis groups and returns the maximum nesting depth for each group.
 

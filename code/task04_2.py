@@ -1,33 +1,20 @@
-from typing import *
-
 def decimal_to_Octal(deciNum: int) -> int:
-    """
-    Converts a given decimal number to its octal representation.
-    
+    """Converts a decimal integer to its octal representation.
+
     Args:
-    deciNum (int): The decimal number to convert.
-    
+        deciNum: The decimal integer to convert.
+
     Returns:
-    int: The octal representation of the input decimal number.
-    
-    Raises:
-    TypeError: If the input is not an integer.
-    ValueError: If the input is greater than 255.
+        The octal representation of the decimal integer as an integer.
     """
-    if not isinstance(deciNum, int):
-        raise TypeError("Input must be an integer")
-    if deciNum < 0:
-        deciNum = abs(deciNum)
-    if deciNum > 255:
-        raise ValueError("Input must be less than or equal to 255")
-
     if deciNum == 0:
-        return 0
+        return 0  # Base case: 0 in decimal is 0 in octal.
 
-    octal_str = ""  # Initialize an empty string to store the octal digits
-    while deciNum > 0:  # Loop until the decimal number becomes zero
-        remainder = deciNum % 8  # Calculate the remainder when dividing by 8
-        octal_str += str(remainder)  # Append the remainder to the octal string
-        deciNum //= 8  # Divide the decimal number by 8 and continue the loop
+    octal_digits = []  # List to store the octal digits.
+    while deciNum > 0:
+        remainder = deciNum % 8  # Get the remainder when divided by 8.
+        octal_digits.insert(0, str(remainder))  # Insert the remainder at the beginning of the list.
+        deciNum //= 8  # Integer division by 8 to get the next decimal value.
 
-    return int(octal_str[::-1])  # Convert the octal string to an integer and reverse it
+    # Join the octal digits and convert the resulting string to an integer.
+    return int("".join(octal_digits))
