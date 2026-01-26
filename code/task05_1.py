@@ -1,11 +1,12 @@
 from collections import Counter
 
+
 def count_common(words):
     """
-    Write a function to count the most common words in a dictionary.
+    Counts the most common words in a list of words.
 
     Args:
-        words: A list of strings representing words.
+        words: A list of strings representing the words.
 
     Returns:
         A list of tuples, where each tuple contains a word and its count,
@@ -14,6 +15,5 @@ def count_common(words):
     """
     if not words:
         return []
-
     word_counts = Counter(words)
     return word_counts.most_common()
