@@ -1,20 +1,23 @@
 from typing import List
 
+
 def can_form_1974(digits: List[int]) -> str:
     """
-    Determines if a given list of digits can form the number 1974.
-    
-    Args:
-    digits (List[int]): A list of integers representing the digits to check.
-    
-    Returns:
-    str: "YES" if the digits can form 1974, otherwise "NO".
+    Given a list of four digits, determine whether they can be rearranged
+    to form the sequence 1974.
+
+    Return "YES" if possible, otherwise return "NO".
+
+    >>> can_form_1974([1, 7, 9, 4])
+    'YES'
+    >>> can_form_1974([1, 1, 9, 4])
+    'NO'
     """
-    # Sort the digits in ascending order
+    target = [1, 9, 7, 4]
     sorted_digits = sorted(digits)
-    
-    # Check if the sorted digits match the sequence [1, 4, 7, 9]
-    if sorted_digits == [1, 4, 7, 9]:
+    sorted_target = sorted(target)
+
+    if sorted_digits == sorted_target:
         return "YES"
     else:
         return "NO"
