@@ -5,7 +5,6 @@ class CommenterAgent:
     def __init__(self, llm_client):
         self.llm_client = llm_client
 
-        # PROMPT OTTIMIZZATO: Seniority alta, focus su intenti algoritmici
         self.system_prompt = textwrap.dedent("""\
             You are a Senior Python Software Engineer specializing in code maintainability.
             Your role is to refine the documentation of existing code without altering its behavior.
@@ -58,7 +57,7 @@ class CommenterAgent:
         return self._clean_response(response_text, original_code=code)
 
     def _clean_response(self, response_text, original_code):
-        # Cerca il blocco di codice
+        # Search for the code block
         match = re.search(r"```python\s*(.*?)```", response_text, re.DOTALL | re.IGNORECASE)
         if match:
             code = match.group(1)
@@ -68,7 +67,7 @@ class CommenterAgent:
             
         code = code.strip()
         
-        # Se il commenter ha fallito o restituito vuoto, restituiamo il codice originale
+        # If the commenter failed or returned empty, we return the original code
         if not code:
             return original_code
             
